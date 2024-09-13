@@ -1,0 +1,168 @@
+﻿@model List<ResultPropertyDto>
+@{
+    ViewData["Title"] = "MyFavorite";
+    Layout = "~/Views/Default/_Layout.cshtml";
+}
+
+
+@using System.Security.Claims
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        var userId = '@User.FindFirstValue(ClaimTypes.NameIdentifier)'; // Kullanıcı ID'sini al
+        var favoritePropertyIds = [];
+
+        // Favori ilanları almak için API çağrısı
+        $.getJSON(`https://localhost:7028/api/Favorite/GetUserFavorites/${userId}`, function (data) {
+            favoritePropertyIds = data.map(item => item.propertyId); // PropertyId'leri çıkart
+
+            // Her ilan için favori kontrolü yap
+            $('.property-card').each(function () {
+                var propertyId = $(this).data('id');
+                if (favoritePropertyIds.includes(propertyId)) {
+                    $(this).find('.favorite-icon').removeClass('la-star-o').addClass('la-star').css('color', 'gold');
+                    $(this).find('.btn-favorite').addClass('active').text('Favorilerden Çıkar');
+                }
+            });
+        });
+
+        // Favorilere Ekle / Favorilerden Çıkar butonuna tıklama olayını yönet
+        $('.btn-favorite').on('click', function (e) {
+            e.preventDefault(); // Sayfanın yenilenmesini engelle
+            var propertyId = $(this).data('id');
+            var $this = $(this);
+            var $icon = $this.closest('.property-card').find('.favorite-icon');
+
+            if ($this.hasClass('active')) {
+                // Favorilerden çıkarma işlemi
+                $.post(`/User/Favorite/RemoveFavorite/${propertyId}`, function () {
+                    $this.removeClass('active');
+                    $icon.removeClass('la-star').addClass('la-star-o').css('color', 'grey');
+                    $this.text('Favorilere Ekle');
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log("Favorilerden çıkarma başarısız:", textStatus, errorThrown);
+                });
+            } else {
+                // Favorilere ekleme işlemi
+                $.post(`/User/Favorite/CreateFavorite/${propertyId}`, function () {
+                    $this.addClass('active');
+                    $icon.removeClass('la-star-o').addClass('la-star').css('color', 'gold');
+                    $this.text('Favorilerden Çıkar');
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log("Favorilere ekleme başarısız:", textStatus, errorThrown);
+                });
+            }
+        });
+    });
+</script>
+
+
+
+<div class="content">
+    <h4 class="page-title">Favori İlanlarım</h4>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4 property-card" data-id="@item.Id">
+                <div class="card">
+                    <div class="position-relative">
+                        <img src="@item.Image" class="card-img-top" style="height: 200px; object-fit: cover;" alt="İlan Resmi" />
+                        <!-- Favori Yıldız -->
+                        <i class="la la-star favorite-icon position-absolute" style="top: 10px; right: 10px; color: grey;"></i>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-price"><strong>Fiyat:</strong> @item.Price</p>
+                        </div>
+                        <p class="card-text">@item.Description</p>
+                        <a href="/User/Property/Details/@item.Id" data-toggle="modal" data-target="#Modal1-@item.Id" class="btn btn-primary">Detaylar</a>
+                        <a class="btn btn-favorite" data-id="@item.Id">
+                            Favorilere Ekle
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="Modal1-@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">@item.Title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <img src="@item.Image" class="w-100 mb-3" style="height:300px;" />
+                            <div class="card">
+                                <div class="card-header">Emlak Özellikleri</div>
+                                <div class="card-body p-3">
+                                    <p><span style="font-weight:500">Renk:</span> sarı</p>
+                                    <p><span style="font-weight:500">Yıl:</span> 2020t</p>
+                                    <p><span style="font-weight:500">Oda Sayısı:</span> 3</p>
+                                    <p><span style="font-weight:500">Metrekare:</span> 200</p>
+                                    <p><span style="font-weight:500">Konum:</span> ankara</p>
+
+                                    <p><span style="font-weight:500">Açıklama:</span> @item.Description</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal End -->
+        }
+    </div>
+
+</div>
+
+<style>
+    .card-img-top {
+        max-height: 200px;
+        object-fit: cover;
+    }
+
+    .card-title {
+        margin-bottom: 0;
+    }
+
+    .card-price {
+        margin-bottom: 0;
+        font-weight: bold;
+    }
+
+    .card-text {
+        max-height: 50px; /* Açıklamanın yükseklik sınırı */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+</style>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+
