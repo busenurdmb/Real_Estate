@@ -8,8 +8,14 @@
 <body>
 	<div class="wrapper">
 		@await Component.InvokeAsync("_LayoutNavbarComponentPartial")
-
-		@await Component.InvokeAsync("_LayoutSidebarComponentPartial")
+		@if (User.IsInRole("User"))
+		{
+			@await Component.InvokeAsync("_LayoutSidebarUserComponentPartial")
+		}
+		@if (User.IsInRole("Admin"))
+		{
+			@await Component.InvokeAsync("_LayoutSidebarAdminComponentPartial")
+		}
 
 
 		<div class="main-panel">

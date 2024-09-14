@@ -1,51 +1,65 @@
-﻿@* <script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+﻿@using System.Security.Claims
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> 
+
 <script src="~/js/site.js" asp-append-version="true"></script>
-<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script> *@
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script> 
 
 <div class="main-header">
 
-@* 	<script type="text/javascript">
+  	<script type="text/javascript">
 
 		$(document).ready(() => {
 
-			var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7291/SignalRHub").build();
+			var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7028/RealEstateHub").build();
 			$("#connstatus").text(connection.state);
 			connection.start().then(() => {
 				$("#connstatus").text(connection.state);
 				setInterval(() => {
-					connection.invoke("SendNotification");
+					connection.invoke("SendProperty");
 				}, 1000);
+				
 			}).catch((err) => { console.log(err) });
 
-
-			connection.on("ReceiveNotificationCountByFalse", (value) => {
-				$("#notificationcount").text(value);
+			connection.on("ReceivePropertyCount", (value) => {
+				$("#propertycount").text(value);
 			});
-
-			connection.on("ReceiveNotificationListByFalse", (value) => {
+			connection.on("ReceivePropertyList", (value) => {
 				console.log(value);
-				$("#notilist").empty();
-				for (var i = 0; i < value.length; i++) {
-					$("#notilist").append(`<a href="/Notifications/NotificationStatusChangeToTrue/${value[i].notificationID}">
-							<div class="${value[i].type}"><i class="${value[i].icon}"></i></div>
+				$("#notilist").empty(); // Mevcut listeyi temizle
+
+				if (Array.isArray(value)) {
+
+					value.forEach(item => {
+						// Tarih verisi varsa, tarih formatına çevir
+						let addedDate = item.addedDate ? new Date(item.addedDate).toLocaleDateString() : 'Tarih Bilinmiyor';
+
+						// HTML ekleme
+						$("#notilist").append(`
+						<a href="/Admin/Property/Details/${item.id}">
+							<div class="notif-icon notif-primary"><i class="la la-home"></i></div>
 							<div class="notif-content">
-							<span class="block">
-							${value[i].description}
-							</span>
-									<span class="time">${new Date(value[i].date).toLocaleDateString()}</span>
+								<span class="block">
+									${item.title} - ${item.status}
+								</span>
+								<span class="time">${addedDate}</span>
 							</div>
-							</a>
-							`)
-				};
+						</a>
+					`);
+					});
+				} else {
+					console.error("Veri beklenilen formatta değil:", value);
+				}
 			});
+
 		});
 
-	</script> *@
+	</script>  
 
 	<div class="logo-header">
 		<a href="index.html" class="logo">
-			SignalR Admin
+			Real ESTATE
 		</a>
 
 		<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,58 +80,63 @@
 					</div>
 				</div>
 			</form>
-			
+			<div class="alert alert-info">Bağlantı Durumu <strong id="connstatus"></strong>  </div>
 			<ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
-				<li class="nav-item dropdown hidden-caret">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="la la-envelope"></i>
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">Gelen Mesajlar</a>
-						<a class="dropdown-item" href="#">Rezervasyonlar</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">İletişim</a>
-					</div>
-				</li>
-				<li class="nav-item dropdown hidden-caret">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="la la-bell"></i>
-						<span class="notification" id="notificationcount"></span>
-					</a>
-					<ul class="dropdown-menu notif-box" aria-labelledby="navbarDropdown">
-						<li>
-							<div class="dropdown-title">Yeni Bildirimleriniz Var</div>
-						</li>
-						<li>
-							<div class="notif-center">
-								<div id="notilist"></div>
-							</div>
-						</li>
-						<li>
-							<a class="see-all" href="javascript:void(0);"> <strong>See all notifications</strong> <i class="la la-angle-right"></i> </a>
-						</li>
-					</ul>
-				</li>
+				
+			    @if (User.IsInRole("Admin"))
+				{
+					<li class="nav-item dropdown hidden-caret">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="la la-bell"></i>
+							<span class="notification" id="propertycount"></span>
+						</a>
+						<ul class="dropdown-menu notif-box" aria-labelledby="navbarDropdown">
+							<li>
+								<div class="dropdown-title">Yeni Onaylanmayı Bekleyen İlanlar Var</div>
+							</li>
+							<li>
+								<div class="notif-center" id="notilist">
+									<!-- JavaScript ile oluşturulacak bildirimler burada -->
+								</div>
+								
+							</li>
+
+							<li>
+								<a class="see-all" href="/Admin/Property/GetAll"> <strong>Tüm İlanları Gör</strong> <i class="la la-angle-right"></i> </a>
+							</li>
+						</ul>
+					</li>
+				}
 				<li class="nav-item dropdown">
-					<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="~/Ready-Bootstrap-Dashboard-master/assets/img/profile.jpg" alt="user-img" width="36" class="img-circle"><span>Hizrian</span></span> </a>
+					<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false"> <img src="~/Ready-Bootstrap-Dashboard-master/assets/img/profile.jpg" alt="user-img" width="36" class="img-circle"><span>@User.FindFirstValue("username")</span></span> </a>
 					<ul class="dropdown-menu dropdown-user">
 						<li>
 							<div class="user-box">
 								<div class="u-img"><img src="~/Ready-Bootstrap-Dashboard-master/assets/img/profile.jpg" alt="user"></div>
 								<div class="u-text">
 									<h4>Admin</h4>
-									<p class="text-muted">signalR@gmail.com</p><a href="profile.html" class="btn btn-rounded btn-danger btn-sm">Menüyü Gör</a>
+									@if (User.IsInRole("User"))
+									{
+										<p class="text-muted"></p>
+
+										<a href="/Users/Property/GetAll" class="btn btn-rounded btn-danger btn-sm">İlanları Gör</a>
+									}
+									@if (User.IsInRole("Admin"))
+									{
+										<p class="text-muted"></p>
+
+										<a href="/Admin/Property/GetAll" class="btn btn-rounded btn-danger btn-sm">İlanları Gör</a>
+
+									}
+									
 								</div>
 							</div>
 						</li>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#"><i class="ti-user"></i> Menü</a>
-						<a class="dropdown-item" href="#"></i> Ayarlar</a>
-						<a class="dropdown-item" href="#"><i class="ti-email"></i> Rezervasyonlar</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#"><i class="ti-settings"></i> Dashboard</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#"><i class="fa fa-power-off"></i> Çıkış Yap</a>
+						<a class="dropdown-item" href="#"><i class="ti-user"></i>Hoş Geldin @User.FindFirstValue(ClaimTypes.Name)</a>
+						<a class="dropdown-item" href="#"></i>  @User.FindFirstValue(ClaimTypes.Email)</a>
+					     <div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/Login/Logout"><i class="fa fa-power-off"></i> Çıkış Yap</a>
 					</ul>
 					<!-- /.dropdown-user -->
 				</li>

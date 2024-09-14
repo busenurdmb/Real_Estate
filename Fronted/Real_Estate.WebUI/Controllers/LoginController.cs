@@ -8,9 +8,11 @@ using System.Text.Json;
 using System.Text;
 using Real_Estate.Dto.UserDtos;
 using Real_Estate.WebUI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Real_Estate.WebUI.Controllers
 {
+    [AllowAnonymous]
     public class LoginController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -64,11 +66,13 @@ namespace Real_Estate.WebUI.Controllers
                         // Rolüne göre yönlendirme
                         if (userRole == "Admin")
                         {
-                            return RedirectToAction("Index", "Admin"); // Admin sayfasına yönlendirme
-                        }
-                        else if (userRole == "User")
+                            
+							return RedirectToAction("GetAll", "Property", new { area = "Admin" }); // Admin sayfasına yönlendirme
+
+						}
+						else if (userRole == "User")
                         {
-                            return RedirectToAction("GetMyPropertyList", "Property", new { area = "User" }); // Kullanıcı sayfasına yönlendirme
+                            return RedirectToAction("GetMyPropertyList", "Property", new { area = "Users" }); // Kullanıcı sayfasına yönlendirme
                         }
                         else
                         {
@@ -81,6 +85,14 @@ namespace Real_Estate.WebUI.Controllers
 
             // Hata durumunda geri dön
             return View();
+        }
+        public async Task<IActionResult> Logout()
+        {
+            // Kullanıcının oturumunu sonlandırma
+            await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
+
+            // Opsiyonel: Kullanıcıyı başka bir sayfaya yönlendir
+            return RedirectToAction("Index", "Login"); // Örneğin, ana sayfaya yönlendir
         }
     }
 }

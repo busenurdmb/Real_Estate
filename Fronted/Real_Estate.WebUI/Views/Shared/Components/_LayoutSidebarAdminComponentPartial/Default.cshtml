@@ -1,0 +1,81 @@
+﻿<div class="sidebar ">
+	<div class="scrollbar-inner sidebar-wrapper">
+		<div class="user">
+			<div class="photo">
+				<img src="~/Ready-Bootstrap-Dashboard-master/assets/img/profile.jpg">
+			</div>
+			<div class="info">
+				<a class="" data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+					<span class="text-dark">
+						Yönetim Paneli
+						<span class="user-leveltext-dark">@ViewBag.UserName</span>
+						
+					</span>
+				</a>
+				
+
+			</div>
+		</div>
+		<ul class="nav">
+			<li class="nav-item">
+				<a href="/Admin/Property/GetAll">
+					<i class="la la-motorcycle text-primary"></i>
+					<p class="text-dark">İlanları Gör</p>
+				</a>
+			</li>
+	@* 		<li class="nav-item">
+				<a href="index.html">
+					<i class="la la-dashboard text-primary"></i>
+					<p class="text-dark">Dashboard</p>
+					<span class="badge badge-count">5</span>
+				</a>
+			</li> *@
+			<li class="nav-item">
+				<a href="/Admin/Property/GetAllStatus">
+					<i class="la la-music text-primary"></i>
+					<p class="text-dark">İlan Durumları</p>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="/Admin/Favorite/MyFavorite">
+					<i class="la la-keyboard-o text-primary"></i>
+					<p class="text-dark">Favorilerim</p>
+				</a>
+            </li>@*
+			<li class="nav-item">
+				<a href="/Product/Index/">
+					<i class="la la-birthday-cake text-primary"></i>
+					<p class="text-dark">Onaylanan İlanlarım</p>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a href="/Booking/Index/">
+					<i class="la la-bell text-primary"></i>
+					<p class="text-dark">İlan Ekle</p>
+				</a>
+			</li> 
+			
+			<li class="nav-item">
+				<a href="/Notifications/Index/">
+					<i class="la la-umbrella text-primary"></i>
+					<p class="text-dark">Bildirimler</p>
+				</a>
+			</li>
+		
+			<li class="nav-item">
+				<a href="/Setting/Index/">
+					<i class="la la-chain text-primary"></i>
+					<p class="text-dark">Ayarlar</p>
+				</a>
+			</li> *@
+		
+			<li class="nav-item">
+				<a href="/Login/Logout/">
+					<i class="la la-expeditedssl text-primary"></i>
+					<p>Çıkış Yap</p>
+				</a>
+			</li>
+			
+		</ul>
+	</div>
+</div>

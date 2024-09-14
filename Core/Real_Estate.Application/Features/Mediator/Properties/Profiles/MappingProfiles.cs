@@ -5,6 +5,7 @@ using Real_Estate.Application.Features.Mediator.Properties.Commands.Delete;
 using Real_Estate.Application.Features.Mediator.Properties.Commands.Update;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetById;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetList;
+using Real_Estate.Application.Features.Mediator.Properties.Queries.GetlistApprove;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetListByUserId;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetUserFavoriteProperty;
 using Real_Estate.Domain;
@@ -29,8 +30,10 @@ namespace Real_Estate.Application.Features.Mediator.Properties.Profiles
             CreateMap<Property, DeletePropertyCommand>().ReverseMap();
             CreateMap<Property, DeletePropertyResponse>().ReverseMap();
 
+            CreateMap<Property, GetListPendingApprovePropertyResponse>().ReverseMap();
+            CreateMap<Property, GetListApprovePropertyResponse>().ReverseMap();
             CreateMap<Property, GetListPropertyResponse>().ReverseMap();
-            CreateMap<Property, GetByIdPropertyResponse>().ReverseMap();
+			CreateMap<Property, GetByIdPropertyResponse>().ReverseMap();
             CreateMap<Property, GetListByUserIdPropertyResponse>().ReverseMap();
 
             CreateMap<Property, GetUserFavoritePropertyResponse>().ReverseMap();

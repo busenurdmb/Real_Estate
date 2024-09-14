@@ -12,15 +12,22 @@ namespace Real_Estate.Application.Features.Mediator.Properties.Commands.Update
 {
     public class UpdatePropertyCommand : IRequest<UpdatePropertyResponse>
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public string Status { get; set; }
-        public string Image { get; set; }
-        public int UserId { get; set; }
+		public int Id { get; set; }
+		public string Title { get; set; }
+		public string Description { get; set; }
+		public DateTime? AddedDate { get; set; }
+		public decimal Price { get; set; }
+		public string Status { get; set; }
+		public string Image { get; set; }
+		public int UserId { get; set; }
+		public string Address { get; set; }
+		public int NumberOfRooms { get; set; }
+		public int NumberOfBathrooms { get; set; }
+		public int SquareFeet { get; set; }
+		public string PropertyType { get; set; }
+		public string ContactInfo { get; set; }
 
-        public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyCommand, UpdatePropertyResponse>
+		public class UpdatePropertyCommandHandler : IRequestHandler<UpdatePropertyCommand, UpdatePropertyResponse>
         {
             private readonly IEntityRepository<Property> _propertyRepository;
             private readonly IMapper _mapper;

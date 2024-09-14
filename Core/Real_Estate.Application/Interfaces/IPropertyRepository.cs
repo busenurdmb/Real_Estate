@@ -10,7 +10,10 @@ namespace Real_Estate.Application.Interfaces
    
     public interface IPropertyRepository
     {
-        
-        public Task<List<Property>> GetListByUserId(int id);
-    }
+		Task<IEnumerable<Property>> GetAllFilterAsync(string status, DateTime? date);
+		public Task<List<Property>> GetListByUserId(int id);
+		public Task<List<Property>> GetListPendingByApprove();
+		public Task<List<Property>> GetListByApprove();
+		public Task<int> GetListByApprovee();
+	}
 }

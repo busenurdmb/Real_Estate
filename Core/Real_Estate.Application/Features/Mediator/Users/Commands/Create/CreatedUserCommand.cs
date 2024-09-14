@@ -18,7 +18,8 @@ namespace Real_Estate.Application.Features.Mediator.Users.Commands.Create
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public int RoleId { get; set; }
+		public string ImageUrl { get; set; }
+		public int RoleId { get; set; }
         public class CreatedUserCommandHandler : IRequestHandler<CreatedUserCommand, CreatedUserResponse>
         {
             private readonly IEntityRepository<User> _UserRepository;
@@ -34,6 +35,7 @@ namespace Real_Estate.Application.Features.Mediator.Users.Commands.Create
 
             public async Task<CreatedUserResponse> Handle(CreatedUserCommand request, CancellationToken cancellationToken)
             {
+                request.RoleId = 1;
                 var user = _mapper.Map<User>(request);
                 await _UserRepository.CreateAsync(user);
                 return _mapper.Map<CreatedUserResponse>(user);

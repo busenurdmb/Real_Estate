@@ -12,5 +12,11 @@ namespace Real_Estate.Application.Features.Mediator.Users.Queries.ChechUser
         public string Username { get; set; }
         public string Role { get; set; }
         public bool IsExist { get; set; }
-    }
+
+	
+		public string FirstName { get; set; }
+		public string LastName { get; set; } 
+		public string Email { get; set; } 
+	
+	}
 }

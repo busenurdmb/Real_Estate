@@ -1,0 +1,91 @@
+﻿@using System.Security.Claims
+@model CreatePropertyDto
+@{
+    ViewData["Title"] = "Yeni İlan Ekle";
+    Layout = "~/Views/Default/_Layout.cshtml";
+}
+
+<div class="content">
+  <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">İlan Ekle</div>
+                </div>
+                <div class="card-body">
+
+                    <form asp-action="CreateProperty" method="post">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="Title">Başlık</label>
+                                <input type="text" class="form-control" asp-for="Title" placeholder="İlan Başlığı" />
+                                @Html.ValidationMessageFor(model => model.Title)
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="Price">Fiyat</label>
+                                <input type="number" class="form-control" asp-for="Price" placeholder="Fiyat" />
+                                @Html.ValidationMessageFor(model => model.Price)
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="Description">Açıklama</label>
+                                <textarea class="form-control" asp-for="Description" placeholder="İlan Açıklaması"></textarea>
+                                @Html.ValidationMessageFor(model => model.Description)
+                            </div>
+                        </div>
+
+                        <input type="hidden" asp-for="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="Address">Adres</label>
+                                <input type="text" class="form-control" asp-for="Address" placeholder="Adres" />
+                                @Html.ValidationMessageFor(model => model.Address)
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="NumberOfRooms">Oda Sayısı</label>
+                                <input type="number" class="form-control" asp-for="NumberOfRooms" placeholder="Oda Sayısı" />
+                                @Html.ValidationMessageFor(model => model.NumberOfRooms)
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="NumberOfBathrooms">Banyo Sayısı</label>
+                                <input type="number" class="form-control" asp-for="NumberOfBathrooms" placeholder="Banyo Sayısı" />
+                                @Html.ValidationMessageFor(model => model.NumberOfBathrooms)
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="SquareFeet">Metrekare</label>
+                                <input type="number" class="form-control" asp-for="SquareFeet" placeholder="Metrekare" />
+                                @Html.ValidationMessageFor(model => model.SquareFeet)
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="PropertyType">Emlak Türü</label>
+                                <input type="text" class="form-control" asp-for="PropertyType" placeholder="Emlak Türü" />
+                                @Html.ValidationMessageFor(model => model.PropertyType)
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="ContactInfo">İletişim Bilgileri</label>
+                                <input type="text" class="form-control" asp-for="ContactInfo" placeholder="İletişim Bilgileri" />
+                                @Html.ValidationMessageFor(model => model.ContactInfo)
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <a href="@Url.Action("GetMyPropertyList", "Property", new { area = "User" })" class="btn btn-secondary">Geri</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -19,13 +19,18 @@ namespace Real_Estate.Application.Tools
 
             if(!string.IsNullOrWhiteSpace(result.Role))
             claims.Add(new Claim(ClaimTypes.Role, result.Role));
+            claims.Add(new Claim(ClaimTypes.Name, result.FirstName+result.LastName));
+            claims.Add(new Claim(ClaimTypes.Email, result.Email));
 
             claims.Add(new Claim(ClaimTypes.NameIdentifier,result.Id.ToString()));
 
             if (!string.IsNullOrWhiteSpace(result.Username))
                 claims.Add(new Claim("Username",result.Username));
+             
+         
+                
 
-            var key=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key));
+			var key=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key));
 
             var signinCredentials=new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
 

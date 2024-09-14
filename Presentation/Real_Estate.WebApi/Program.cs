@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Real_Estate.Application;
 using Real_Estate.Persitance;
 using Real_Estate.Persitance.Context;
+using Real_Estate.WebApi.RealEstateHub;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<RealEstateContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddPersistanceService(builder.Configuration);
@@ -29,6 +31,7 @@ builder.Services.AddCors(opt =>
         .AllowCredentials();
     });
 });
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -49,5 +52,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHub<RealEstateHub>("/RealEstateHub");
 app.Run();

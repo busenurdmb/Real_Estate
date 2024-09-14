@@ -1,0 +1,98 @@
+﻿@using X.Web.PagedList
+@model X.PagedList.IPagedList<ResultPropertyDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Default/_Layout.cshtml";
+}
+<div class="content">
+    
+    <div class="row">
+        <div class="col-12">
+         
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">İlan Listesi</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-sub">
+                        İlan ile ilgili işlemleri aşağıdan gerçekleştirebilirsiniz.
+                    </div>
+
+                    
+                    <div class="table-responsive">
+                        <table class="table mt-3">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Başlık</th>
+                                    <th scope="col">Açıklama</th>
+                                    <th scope="col">Fiyat</th>
+                                    <th scope="col">Durumu</th>
+                                    <th scope="col">Sil</th>
+                                    <th scope="col">Güncelle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    string color = "";
+                                    if (item.Status == "Onay Bekliyor")
+                                    {
+                                        color = "badge badge-info";
+                                    }
+                                    else if (item.Status == "Onaylandı")
+                                    {
+                                        color = "badge badge-primary";
+                                    }
+                                    else if (item.Status == "İptal Edildi")
+                                    {
+                                        color = "badge badge-dark";
+                                    }
+
+                                    <tr>
+                                        <td>
+                                            <img src="@item.Image" style="width: 100px; height: 100px;" />
+                                        </td>
+                                        <td>@item.Title</td>
+                                        <td>@item.Description</td>
+                                        <td>@item.Price</td>
+                                        <td class="text-center">
+                                            <span class="@color">@item.Status</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/Users/Property/RemoveProperty/@item.Id" class="btn btn-danger btn-sm">
+                                                <i class="la la-trash-o"></i> Sil
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/Users/Property/UpdateProperty/@item.Id" class="btn btn-success btn-sm">
+                                                <i class="la la-edit"></i> Güncelle
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div> 
+                    <!-- Sayfalama Butonları -->
+                    <div class="d-flex justify-content-center">
+                        @Html.PagedListPager(Model, page => Url.Action("GetMyPropertyList", new { page }),
+                                 new PagedListRenderOptions
+                        {
+                            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                            DisplayItemSliceAndTotal = true,
+                            Display = PagedListDisplayMode.IfNeeded,
+                            MaximumPageNumbersToDisplay = 5
+                        })
+                    </div>
+                    <a href="/Users/Property/CreateProperty/" class="btn btn-outline-primary mt-3">Yeni İlan Girişi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

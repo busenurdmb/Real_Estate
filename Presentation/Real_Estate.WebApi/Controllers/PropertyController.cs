@@ -1,12 +1,17 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Real_Estate.Application.Features.Mediator.Properties.Commands.Approve;
 using Real_Estate.Application.Features.Mediator.Properties.Commands.Create;
 using Real_Estate.Application.Features.Mediator.Properties.Commands.Delete;
+using Real_Estate.Application.Features.Mediator.Properties.Commands.Reject;
 using Real_Estate.Application.Features.Mediator.Properties.Commands.Update;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetById;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetList;
+using Real_Estate.Application.Features.Mediator.Properties.Queries.GetlistApprove;
+using Real_Estate.Application.Features.Mediator.Properties.Queries.GetListByApproveCount;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetListByUserId;
+using Real_Estate.Application.Features.Mediator.Properties.Queries.GetPropertiesFilter;
 
 namespace Real_Estate.WebApi.Controllers
 {
@@ -28,16 +33,36 @@ namespace Real_Estate.WebApi.Controllers
 
             return Ok(values);
         }
+		
+	    [HttpGet("CountApprova")]
+		public async Task<IActionResult> GetPendingApprova()
+		{
+			var values = await _mediator.Send(new GetPendingApprovalCountQuery());
 
-        [HttpGet]
-        public async Task<IActionResult> PropertyList()
+			return Ok(values);
+		}
+		[HttpGet("PropertyPendingApproveList")]
+        public async Task<IActionResult> PropertyPendingApproveList()
         {
-            var values = await _mediator.Send(new GetListPropertyQuery());
+            var values = await _mediator.Send(new GetListPendingApprovePropertyQuery());
 
             return Ok(values);
         }
+		[HttpGet("PropertyApproveList")]
+		public async Task<IActionResult> PropertyApproveList()
+		{
+			var values = await _mediator.Send(new GetListApprovePropertyQuery());
 
-        [HttpGet("{id}")]
+			return Ok(values);
+		}
+		[HttpGet]
+		public async Task<IActionResult> PropertyList()
+		{
+			var values = await _mediator.Send(new GetListPropertyQuery());
+
+			return Ok(values);
+		}
+		[HttpGet("{id}")]
         public async Task<IActionResult> GetProperty(int id)
         {
             GetByIdPropertyQuery getByIdProperty = new() { Id = id };
@@ -68,5 +93,26 @@ namespace Real_Estate.WebApi.Controllers
 
             return Ok(response);
         }
-    }
+
+		[HttpPost("Approve/{id}")]
+		public async Task<IActionResult> Approve(int id)
+		{
+			var result = await _mediator.Send(new ApprovePropertyCommand { PropertyId = id });
+			return result ? Ok() : NotFound();
+		}
+
+		[HttpPost("Reject/{id}")]
+		public async Task<IActionResult> Reject(int id)
+		{
+			var result = await _mediator.Send(new RejectPropertyCommand { PropertyId = id });
+			return result ? Ok() : NotFound();
+		}
+
+		[HttpGet("Filter")]
+		public async Task<IActionResult> Get([FromQuery] string status, [FromQuery] DateTime? date)
+		{
+			var properties = await _mediator.Send(new GetPropertiesFilterQuery { Status = status, Date = date });
+			return Ok(properties);
+		}
+	}
 }

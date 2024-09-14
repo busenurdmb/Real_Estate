@@ -12,13 +12,21 @@ namespace Real_Estate.Application.Features.Mediator.Properties.Commands.Create
 {
     public class CreatedPropertyCommand : IRequest<CreatedPropertyResponse>
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public string Status { get; set; }
-        public string Image { get; set; }
-        public int UserId { get; set; }
-        public class CreatedPropertyCommandHandler : IRequestHandler<CreatedPropertyCommand, CreatedPropertyResponse>
+	
+		public string Title { get; set; }
+		public string Description { get; set; }
+		public DateTime? AddedDate { get; set; }
+		public decimal Price { get; set; }
+		public string Status { get; set; }
+		public string Image { get; set; }
+		public int UserId { get; set; }
+		public string Address { get; set; }
+		public int NumberOfRooms { get; set; }
+		public int NumberOfBathrooms { get; set; }
+		public int SquareFeet { get; set; }
+		public string PropertyType { get; set; }
+		public string ContactInfo { get; set; }
+		public class CreatedPropertyCommandHandler : IRequestHandler<CreatedPropertyCommand, CreatedPropertyResponse>
         {
             private readonly IEntityRepository<Property>  _propertyRepository;
             private readonly IMapper _mapper;
@@ -34,7 +42,7 @@ namespace Real_Estate.Application.Features.Mediator.Properties.Commands.Create
             public async Task<CreatedPropertyResponse> Handle(CreatedPropertyCommand request, CancellationToken cancellationToken)
             {
                 request.Status = "Onay Bekliyor";
-                request.UserId = 3;
+                //request.UserId = 3;
                 var proporty = _mapper.Map<Property>(request);
                 await _propertyRepository.CreateAsync(proporty);
                 return _mapper.Map<CreatedPropertyResponse>(proporty);

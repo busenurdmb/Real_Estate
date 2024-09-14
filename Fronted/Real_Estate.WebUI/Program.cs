@@ -1,12 +1,27 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Real_Estate.WebUI.Services.Favorite;
+using Real_Estate.WebUI.Services.Property;
+using Real_Estate.WebUI.Validation.PropertyValidator;
+using System.Globalization;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+
+builder.Services.AddControllersWithViews()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePropertyValidator>());
+
+builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddHttpClient();
+
+builder.Services.AddHttpContextAccessor();
 
 //JWT tabanlý kimlik doðrulama þemasý
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
@@ -29,6 +44,13 @@ builder.Services.AddCors(opt =>
             .SetIsOriginAllowed((host) => true)
             .AllowCredentials();
     });
+});
+builder.Services.AddControllers(options =>
+{
+	var policy = new AuthorizationPolicyBuilder()
+		.RequireAuthenticatedUser()
+		.Build();
+	options.Filters.Add(new AuthorizeFilter(policy));
 });
 
 

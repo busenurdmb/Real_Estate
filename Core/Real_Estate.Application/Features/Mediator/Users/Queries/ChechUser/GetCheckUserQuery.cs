@@ -42,6 +42,10 @@ namespace Real_Estate.Application.Features.Mediator.Users.Queries.ChechUser
                     var valuess = await _roleRepository.GetByFilterAsync(x => x.Id == user.RoleId);
                     values.Role = (await _roleRepository.GetByFilterAsync(x => x.Id == user.RoleId)).Name;
                     values.Id = user.Id;
+                    values.Email= user.Email;
+                    values.FirstName = user.FirstName;
+                    values.LastName = user.LastName;
+                   
                 }
                 return values;
             }

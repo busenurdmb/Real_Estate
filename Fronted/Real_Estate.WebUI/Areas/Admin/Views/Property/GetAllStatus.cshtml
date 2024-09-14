@@ -1,0 +1,174 @@
+﻿@using X.Web.PagedList
+@model X.PagedList.IPagedList<ResultPropertyDto>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Default/_Layout.cshtml";
+}
+
+<div class="content">
+    <h4 class="page-title"></h4>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">İlan Listesi</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-sub">
+                        İlan ile ilgili Onaylama ve Reddetme işlemleri aşağıdan gerçekleştirebilirsiniz.
+                    </div>
+                    <!-- Filtreleme Formu -->
+                    <form method="get" class="mb-4">
+                        <div class="form-row">
+                            <!-- Onay Durumu Filtreleme -->
+                            <div class="col-md-4">
+                                <label for="statusFilter">Onay Durumu</label>
+                                <select name="statusFilter" id="statusFilter" class="form-control">
+                                    <option value="">Tümü</option>
+                                    <option value="Onay Bekliyor">Onay Bekliyor</option>
+                                    <option value="Onaylandı">Onaylandı</option>
+                                    <option value="İptal Edildi">İptal Edildi</option>
+                                </select>
+                            </div>
+
+                            <!-- Tarih Aralığı Filtreleme -->
+                            <div class="col-md-3">
+                                <label for="startDate">Başlangıç Tarihi</label>
+                                <input type="date" name="startDate" id="startDate" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <label for="endDate">Bitiş Tarihi</label>
+                                <input type="date" name="endDate" id="endDate" class="form-control" />
+                            </div>
+
+                            <!-- Filtre Butonu -->
+                            <div class="col-md-2 align-self-end">
+                                <button type="submit" class="btn btn-primary">Filtrele</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table mt-3 table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Resim</th>
+                                    <th scope="col">Başlık</th>
+                                    <th scope="col">Açıklama</th>
+                                    <th scope="col">Fiyat</th>
+                                    <th scope="col">Durumu</th>
+                                    <th scope="col" class="text-center">Onayla</th>
+                                    <th scope="col" class="text-center">Reddet veya yayından kaldır</th>
+                                    <th scope="col" class="text-center">Detaylar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    string color = "";
+                                    if (item.Status == "Onay Bekliyor")
+                                    {
+                                        color = "badge badge-info";
+                                    }
+                                    else if (item.Status == "Onaylandı")
+                                    {
+                                        color = "badge badge-primary";
+                                    }
+                                    else if (item.Status == "İptal Edildi")
+                                    {
+                                        color = "badge badge-dark";
+                                    }
+
+                                    <tr>
+                                        <td>
+                                            <img src="@item.Image" class="img-fluid" style="width: 100px; height: 100px;" alt="Emlak Resmi" />
+                                        </td>
+                                        <td>@item.Title</td>
+                                        <td>@item.Description</td>
+                                        <td>@item.Price.ToString("C2")</td>
+                                        <td class="text-center">
+                                            <span class="@color">@item.Status</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/Admin/Property/ApproveProperty/@item.Id" class="btn btn-success btn-sm">
+                                                <i class="la la-check"></i> Onayla
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/Admin/Property/RejectProperty/@item.Id" class="btn btn-danger btn-sm">
+                                                <i class="la la-ban"></i> Reddet veya yayından kaldır
+                                            </a>
+                                        </td>
+                                   
+                                        <td class="text-center">
+                                            <a href="/User/Property/Details/@item.Id" data-toggle="modal" data-target="#Modal1-@item.Id" class="btn btn-warning btn-sm">
+                                                <i class="la la-edit"></i> Detaylar
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="Modal1-@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">@item.Title</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- Image -->
+                                                    <img src="@item.Image" class="img-fluid w-100 mb-3" alt="Emlak Görseli" />
+
+                                                    <!-- Property Details Card -->
+                                                    <div class="card">
+                                                        <div class="card-header">Emlak Özellikleri</div>
+                                                        <div class="card-body p-3">
+                                                            <!-- Dinamik Veriler -->
+                                                            <p><span style="font-weight:500">Başlık:</span> @item.Title</p>
+                                                            <p><span style="font-weight:500">Açıklama:</span> @item.Description</p>
+                                                            <p><span style="font-weight:500">Fiyat:</span> @item.Price.ToString("C2")</p>
+                                                            <p><span style="font-weight:500">Durumu:</span> @item.Status</p>
+                                                            <p><span style="font-weight:500">Oda Sayısı:</span> @item.NumberOfRooms</p>
+                                                            <p><span style="font-weight:500">Banyo Sayısı:</span> @item.NumberOfBathrooms</p>
+                                                            <p><span style="font-weight:500">Metrekare:</span> @item.SquareFeet m²</p>
+                                                            <p><span style="font-weight:500">Emlak Türü:</span> @item.PropertyType</p>
+                                                            <p><span style="font-weight:500">Adres:</span> @item.Address</p>
+                                                            <p><span style="font-weight:500">İletişim Bilgisi:</span> @item.ContactInfo</p>
+                                                            <!-- İlan Tarihi -->
+                                                            <p><span style="font-weight:500">İlan Tarihi:</span> @item.AddedDate?.ToString("dd MMM yyyy")</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal End -->
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Sayfalama Butonları -->
+                    <div class="d-flex justify-content-center">
+                        @Html.PagedListPager(Model, page => Url.Action("GetAllStatus", new { page }),
+                                 new PagedListRenderOptions
+                        {
+                            DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                            DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                            DisplayItemSliceAndTotal = true,
+                            Display = PagedListDisplayMode.IfNeeded,
+                            MaximumPageNumbersToDisplay = 5
+                        })
+                    </div>
+                    <a href="/User/Property/CreateProperty/" class="btn btn-outline-primary mt-3">Yeni İlan Girişi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

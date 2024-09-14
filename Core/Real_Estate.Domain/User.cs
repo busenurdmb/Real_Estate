@@ -14,6 +14,7 @@ namespace Real_Estate.Domain
         public string LastName { get; set; } // Soyad
         public string Email { get; set; } // Email
         public string Password { get; set; } // Şifre
+        public string? ImageUrl { get; set; } // resim
 
         // Foreign Key - Role ID
         public int RoleId { get; set; } // Kullanıcının rol ID'si
