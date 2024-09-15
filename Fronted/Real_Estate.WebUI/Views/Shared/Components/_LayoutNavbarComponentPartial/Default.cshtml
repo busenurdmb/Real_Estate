@@ -37,7 +37,7 @@
 
 						// HTML ekleme
 						$("#notilist").append(`
-						<a href="/Admin/Property/Details/${item.id}">
+										<a href="/Admin/Property/GetAllStatus?statusFilter=Onay+Bekliyor&startDate=&endDate=&sortOrder=desc">
 							<div class="notif-icon notif-primary"><i class="la la-home"></i></div>
 							<div class="notif-content">
 								<span class="block">
@@ -80,7 +80,7 @@
 					</div>
 				</div>
 			</form>
-			<div class="alert alert-info">Bağlantı Durumu <strong id="connstatus"></strong>  </div>
+			@* <div class="alert alert-info">Bağlantı Durumu <strong id="connstatus"></strong>  </div> *@
 			<ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
 				
 			    @if (User.IsInRole("Admin"))

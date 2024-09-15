@@ -100,7 +100,8 @@ namespace Real_Estate.WebUI.Services.Property
             return responseMessage.IsSuccessStatusCode;
         }
 
-        public async Task<IEnumerable<ResultPropertyDto>> FilterPropertiesAsync(string statusFilter, DateTime? startDate, DateTime? endDate)
+       
+        public async Task<IEnumerable<ResultPropertyDto>> FilterPropertiesAsync(string statusFilter, DateTime? startDate, DateTime? endDate, string sortOrder)
         {
             var properties = await GetAllPropertiesAsync();
 
@@ -114,10 +115,20 @@ namespace Real_Estate.WebUI.Services.Property
                 properties = properties.Where(p => p.AddedDate >= startDate && p.AddedDate <= endDate).ToList();
             }
 
+            // Sıralama seçimine göre sıralama
+            if (sortOrder == "asc")
+            {
+                properties = properties.OrderBy(p => p.AddedDate).ToList(); // İlk eklenenler
+            }
+            else if (sortOrder == "desc")
+            {
+                properties = properties.OrderByDescending(p => p.AddedDate).ToList(); // Son eklenenler
+            }
+
             return properties;
         }
 
-		public async Task<List<ResultPropertyDto>> GetAllApprovePropertiesAsync()
+        public async Task<List<ResultPropertyDto>> GetAllApprovePropertiesAsync()
 		{
 			var client = _httpClientFactory.CreateClient();
 			var responseMessage = await client.GetAsync("https://localhost:7028/api/Property/PropertyApproveList");

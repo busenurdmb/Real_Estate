@@ -20,9 +20,9 @@
                     </div>
                     <!-- Filtreleme Formu -->
                     <form method="get" class="mb-4">
-                        <div class="form-row">
+                        <div class="form-row align-items-end">
                             <!-- Onay Durumu Filtreleme -->
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="statusFilter">Onay Durumu</label>
                                 <select name="statusFilter" id="statusFilter" class="form-control">
                                     <option value="">Tümü</option>
@@ -32,22 +32,37 @@
                                 </select>
                             </div>
 
-                            <!-- Tarih Aralığı Filtreleme -->
-                            <div class="col-md-3">
+                            <!-- Başlangıç Tarihi -->
+                            <div class="col-md-2">
                                 <label for="startDate">Başlangıç Tarihi</label>
                                 <input type="date" name="startDate" id="startDate" class="form-control" />
                             </div>
-                            <div class="col-md-3">
+
+                            <!-- Bitiş Tarihi -->
+                            <div class="col-md-2">
                                 <label for="endDate">Bitiş Tarihi</label>
                                 <input type="date" name="endDate" id="endDate" class="form-control" />
                             </div>
 
+                            <!-- Sıralama -->
+                            <div class="col-md-3">
+                                <label for="sortOrder">Sıralama</label>
+                                <select name="sortOrder" id="sortOrder" class="form-control">
+                                    <option value="desc">Son Eklenenler</option>
+                                    <option value="asc">İlk Eklenenler</option>
+                                </select>
+                            </div>
+
                             <!-- Filtre Butonu -->
-                            <div class="col-md-2 align-self-end">
-                                <button type="submit" class="btn btn-primary">Filtrele</button>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100 mt-4">Filtrele</button>
                             </div>
                         </div>
                     </form>
+
+
+
+
                     <div class="table-responsive">
                         <table class="table mt-3 table-hover table-bordered">
                             <thead>

@@ -80,10 +80,15 @@
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
                                 <label for="ContactInfo">İletişim Bilgileri</label>
                                 <input type="text" class="form-control" asp-for="ContactInfo" placeholder="İletişim Bilgileri" />
                                 @Html.ValidationMessageFor(model => model.ContactInfo)
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="ContactInfo">Görsel</label>
+                                <input type="text" class="form-control" asp-for="Image" placeholder="İlan görseli" />
+                                @Html.ValidationMessageFor(model => model.Image)
                             </div>
                         </div>
 

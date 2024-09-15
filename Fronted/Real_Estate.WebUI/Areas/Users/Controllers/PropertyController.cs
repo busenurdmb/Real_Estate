@@ -17,13 +17,15 @@ namespace Real_Estate.WebUI.Areas.Users.Controllers
 	{
 		private readonly IPropertyService _propertyService;
         private readonly IValidator<CreatePropertyDto> _validator;
+        private readonly IValidator<UpdatePropertyDto> _uvalidator;
 
 
 
-        public PropertyController(IPropertyService propertyService, IValidator<CreatePropertyDto> validator)
+        public PropertyController(IPropertyService propertyService, IValidator<CreatePropertyDto> validator, IValidator<UpdatePropertyDto> uvalidator)
         {
             _propertyService = propertyService;
             _validator = validator;
+            _uvalidator = uvalidator;
         }
 
         [Route("Details/{id}")]
@@ -67,8 +69,7 @@ namespace Real_Estate.WebUI.Areas.Users.Controllers
 		public async Task<IActionResult> CreateProperty(CreatePropertyDto createPropertyDto)
 		{
 			createPropertyDto.Status = "Onay Bekliyor";
-			createPropertyDto.Image = "Onay Bekliyor";
-            createPropertyDto.AddedDate = DateTime.UtcNow;
+		 createPropertyDto.AddedDate = DateTime.UtcNow;
 
             // Validate DTO
             var validationResult = await _validator.ValidateAsync(createPropertyDto);
@@ -113,13 +114,25 @@ namespace Real_Estate.WebUI.Areas.Users.Controllers
 		[HttpPost]
 		[Route("UpdateProperty/{id}")]
 		public async Task<IActionResult> UpdateProperty(UpdatePropertyDto updatePropertyDto)
-		{
-			var isUpdated = await _propertyService.UpdatePropertyAsync(updatePropertyDto);
-			if (isUpdated)
-			{
-				return RedirectToAction("GetMyPropertyList", "Property", new { area = "Users" });
-			}
-			return View();
+        {
+            var validationResult = await _uvalidator.ValidateAsync(updatePropertyDto);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return View(updatePropertyDto);
+            }
+            var isUpdated = await _propertyService.UpdatePropertyAsync(updatePropertyDto);
+            if (isUpdated)
+            {
+                return RedirectToAction("GetMyPropertyList", "Property", new { area = "Users" });
+            }
+
+            ModelState.AddModelError("", "İlan eklenirken bir hata oluştu.");
+            return View(updatePropertyDto);
+            
 		}
 	}
 

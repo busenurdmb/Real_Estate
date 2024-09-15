@@ -8,14 +8,16 @@ using Real_Estate.WebUI.Services.Favorite;
 using Real_Estate.WebUI.Services.Property;
 using Real_Estate.WebUI.Validation.PropertyValidator;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllersWithViews()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreatePropertyValidator>());
+    .AddFluentValidation(fv =>
+        fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly())
+    );
 
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();

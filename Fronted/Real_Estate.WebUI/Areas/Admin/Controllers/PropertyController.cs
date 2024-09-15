@@ -34,10 +34,10 @@ namespace Real_Estate.WebUI.Areas.Admin.Controllers
     
 
         [Route("GetAllStatus")]
-        public async Task<IActionResult> GetAllStatus(int? page, string statusFilter, DateTime? startDate, DateTime? endDate)
+        public async Task<IActionResult> GetAllStatus(int? page, string statusFilter, DateTime? startDate, DateTime? endDate, string sortOrder)
         {
             // Filtreleme ve sayfalama işlemleri için servis kullanımı
-            var properties = await _propertyService.FilterPropertiesAsync(statusFilter, startDate, endDate);
+            var properties = await _propertyService.FilterPropertiesAsync(statusFilter, startDate, endDate,sortOrder);
             int pageNumber = page ?? 1;
             var pagedList = properties.ToPagedList(pageNumber, 10);
 
