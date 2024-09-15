@@ -5,6 +5,7 @@ using Real_Estate.Application.Features.Mediator.Properties.Commands.Approve;
 using Real_Estate.Application.Features.Mediator.Properties.Commands.Create;
 using Real_Estate.Application.Features.Mediator.Properties.Commands.Delete;
 using Real_Estate.Application.Features.Mediator.Properties.Commands.Reject;
+using Real_Estate.Application.Features.Mediator.Properties.Commands.Takedown;
 using Real_Estate.Application.Features.Mediator.Properties.Commands.Update;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetById;
 using Real_Estate.Application.Features.Mediator.Properties.Queries.GetList;
@@ -100,8 +101,13 @@ namespace Real_Estate.WebApi.Controllers
 			var result = await _mediator.Send(new ApprovePropertyCommand { PropertyId = id });
 			return result ? Ok() : NotFound();
 		}
-
-		[HttpPost("Reject/{id}")]
+        [HttpPost("Takedown/{id}")]
+        public async Task<IActionResult> Takedown(int id)
+        {
+            var result = await _mediator.Send(new TakedownPropertyCommand { PropertyId = id });
+            return result ? Ok() : NotFound();
+        }
+        [HttpPost("Reject/{id}")]
 		public async Task<IActionResult> Reject(int id)
 		{
 			var result = await _mediator.Send(new RejectPropertyCommand { PropertyId = id });

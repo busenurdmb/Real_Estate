@@ -66,9 +66,19 @@ namespace Real_Estate.WebUI.Areas.Admin.Controllers
 
             return NotFound();
         }
+        [Route("TakedownProperty/{id}")]
+        public async Task<IActionResult> TakedownProperty(int id)
+        {
+            var result = await _propertyService.TakedownPropertyAsync(id);
+            if (result)
+            {
+                return RedirectToAction("GetAllStatus");
+            }
 
+            return NotFound();
+        }
         // İlanı Reddet
-     
+
         [Route("RejectProperty/{id}")]
         public async Task<IActionResult> RejectProperty(int id)
         {

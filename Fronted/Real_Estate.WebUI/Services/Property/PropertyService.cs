@@ -128,6 +128,13 @@ namespace Real_Estate.WebUI.Services.Property
 			}
 			return new List<ResultPropertyDto>();
 		}
-	}
+
+        public async Task<bool> TakedownPropertyAsync(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.PostAsync($"https://localhost:7028/api/Property/Takedown/{id}", null);
+            return responseMessage.IsSuccessStatusCode;
+        }
+    }
 
 }

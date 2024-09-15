@@ -15,6 +15,7 @@ namespace Real_Estate.WebUI.Services.Property
 
 		Task<bool> ApprovePropertyAsync(int id);
 		Task<bool> RejectPropertyAsync(int id);
+		Task<bool> TakedownPropertyAsync(int id);
 
         Task<IEnumerable<ResultPropertyDto>> FilterPropertiesAsync(string statusFilter, DateTime? startDate, DateTime? endDate);
 
